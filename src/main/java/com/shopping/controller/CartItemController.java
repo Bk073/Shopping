@@ -100,7 +100,7 @@ public class CartItemController {
 
 	@RequestMapping(value= "removeCartItem/{cartItemId}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void removeCartItem(@PathVariable(value = "cartItemId") String cartItemId) {
+	public void removeCartItem(@PathVariable(value = "cartItemId") int cartItemId) {
 		cartItemService.removeCartItem(cartItemId);
 	}
 

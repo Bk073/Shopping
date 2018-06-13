@@ -17,30 +17,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
+	SecurityHandler successHandler;
+	@Autowired
 	@Qualifier("userDetailsService")
 	UserDetailsService userDetailsService;
-
-	 @Autowired
-	    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-	        auth.userDetailsService(userDetailsService);
-	        auth.authenticationProvider(authenticationProvider());
-	    }
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		/*http.httpBasic().authenticationEntryPoint(getBasicAuthenticationEntryPoint());*/
-	    http.authorizeRequests().antMatchers("/admin*/**")
+	@Autowired
+    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+        auth.authenticationProvider(authenticationProvider());
+    }
+ 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+    	http.authorizeRequests().antMatchers("/admin*/**")
 		.access("hasRole('ROLE_ADMIN')")
 		.antMatchers("/cart*/**").access("hasRole('ROLE_USER')")
 		.and().formLogin()
-		.loginPage("/login").failureUrl("/login?error").permitAll()
-		.loginProcessingUrl("/login").usernameParameter("username")
-		.passwordParameter("password")	
+		.permitAll()
+		.successHandler(successHandler)
 		.and().logout().logoutSuccessUrl("/login?logout")
 		.and().csrf().disable();
-		/*.and().exceptionHandling().accessDeniedPage("/403");*/
-	}
-	@Bean
+    }
+ 
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

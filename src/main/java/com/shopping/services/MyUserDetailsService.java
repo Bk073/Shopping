@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,44 +30,31 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UserDao userDao;
 
-	@Transactional(readOnly=true)
-	public UserDetails loadUserByUsername( String username) 
-		throws UsernameNotFoundException {
-	
-		com.shopping.entity.User user = userDao.findByUserName(username);
-		if(user == null){
-			logger.info("User not found");
-            throw new UsernameNotFoundException("Username not found");
-		}
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
-                true, true, true, true, buildUserAuthority((Set<UserRole>) user));
-		/*List<GrantedAuthority> authorities = 
-                                      buildUserAuthority(user.getUserRole());
+	 @Transactional(readOnly=true)
+	    public UserDetails loadUserByUsername(String username)
+	            throws UsernameNotFoundException {
+	        com.shopping.entity.User user = userDao.findByUserName(username);
+	        logger.info("User : {}", user);
+	        if(user==null){
+	            logger.info("User not found");
+	            throw new UsernameNotFoundException("Username not found");
+	        }
+	            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
+	                 true, true, true, true, getGrantedAuthorities((Set<UserRole>) user.getUserRole()));
+	    }
+	 
+	     
+	    private List<GrantedAuthority> getGrantedAuthorities(Set<UserRole> userRoles){
+	    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
 
-		return buildUserForAuthentication(user, authorities);*/
-		
-	}
+			// Build user's authorities
+			for (UserRole userRole : userRoles) {
+				setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
+			}
 
-	// Converts com.shopping.users.entity.User user to
-	// org.springframework.security.core.userdetails.User
-	/*private User buildUserForAuthentication(com.shopping.entity.User user, 
-		List<GrantedAuthority> authorities) {
-		return new User(user.getUsername(), user.getPassword(), 
-			user.isEnabled(), true, true, true, authorities);
-	}*/
+			List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
 
-	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
-
-		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
-
-		// Build user's authorities
-		for (UserRole userRole : userRoles) {
-			setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
-		}
-
-		List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
-
-		return Result;
-	}
-	
+			return Result;
+	       
+	    }
 }

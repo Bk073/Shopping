@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
+	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name ="userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -138,6 +138,7 @@ public class User implements Serializable{
 	public void setCart(Cart cart) {
 		this.cart = cart;
 	}
+
 	
 
 }

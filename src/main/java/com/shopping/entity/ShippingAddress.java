@@ -17,7 +17,7 @@ public class ShippingAddress implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String shippingAddressId;
+	private int shippingAddressId;
 
 	private String address;
 	private String city;
@@ -28,11 +28,11 @@ public class ShippingAddress implements Serializable {
 	@OneToOne(mappedBy = "shippingAddress")
 	private User user;
 
-	public String getBillingAddressId() {
+	public int getBillingAddressId() {
 		return shippingAddressId;
 	}
 
-	public void setBillingAddressId(String billingAddressId) {
+	public void setBillingAddressId(int billingAddressId) {
 		this.shippingAddressId = billingAddressId;
 	}
 

@@ -4,10 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Order;
+
 @Entity
 @Table(name="cart")
 public class Cart implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name="cart_id")
 	private int Id;
