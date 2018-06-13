@@ -1,12 +1,9 @@
 package com.shopping.configuration;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -23,39 +20,38 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Qualifier("userDetailsService")
 	UserDetailsService userDetailsService;
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService)/*.passwordEncoder(bCryptPasswordEncoder())*/;
-	}
-	@Bean
-	   public BCryptPasswordEncoder bCryptPasswordEncoder() {
-	        return new BCryptPasswordEncoder();
+	 @Autowired
+	    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+	        auth.userDetailsService(userDetailsService);
+	        auth.authenticationProvider(authenticationProvider());
 	    }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		/*http.httpBasic().authenticationEntryPoint(getBasicAuthenticationEntryPoint());*/
-	    http.authorizeRequests().antMatchers("/admin/**")
-		.access("hasRole('ROLE_ADMIN')").and().formLogin()
-		.loginPage("/login").failureUrl("/login?error")
-		.usernameParameter("username")
+	    http.authorizeRequests().antMatchers("/admin*/**")
+		.access("hasRole('ROLE_ADMIN')")
+		.antMatchers("/cart*/**").access("hasRole('ROLE_USER')")
+		.and().formLogin()
+		.loginPage("/login").failureUrl("/login?error").permitAll()
+		.loginProcessingUrl("/login").usernameParameter("username")
 		.passwordParameter("password")	
 		.and().logout().logoutSuccessUrl("/login?logout")
-		.and().csrf()
-		.and().exceptionHandling().accessDeniedPage("/403");
+		.and().csrf().disable();
+		/*.and().exceptionHandling().accessDeniedPage("/403");*/
 	}
-	/*@Bean
-	public BasicAuthenticationEntryPoint getBasicAuthenticationEntryPoint(){
-	    BasicAuthenticationEntryPoint basicAuthenticationEntryPoint = new BasicAuthenticationEntryPoint();
-	    basicAuthenticationEntryPoint.setRealmName("Basic Authentication");
-	    return basicAuthenticationEntryPoint;
-	}
-
 	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-	    return super.authenticationManagerBean();
-	}*/
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+ 
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
 	
 	

@@ -26,7 +26,7 @@ angular.module('myApp').factory('ProductService',['$http','$q', function($http, 
 	}
 	function addProduct(product){
 		var deferred = $q.defer();
-		$http.post(REST_SERVICE_URI+"add", product)
+		$http.post('http://localhost:8080/shopng/addProduct/', product)
 		    .then(
 		       function(response){
 		    	   deferred.resolve(response.data);
@@ -41,7 +41,7 @@ angular.module('myApp').factory('ProductService',['$http','$q', function($http, 
 	}
 	function updateProduct(product,id){
 		var deferred = $q.defer();
-		$http.put(REST_SERVICE_URI+id, product)
+		$http.put(REST_SERVICE_URI+"/update"+id, product)
 		    .then(
 		       function(response){
 		    	   deferred.resolve(response.data);
@@ -55,7 +55,7 @@ angular.module('myApp').factory('ProductService',['$http','$q', function($http, 
 	}
 	function deleteProduct(id){
 		var deferred = $q.defer();
-		 $http.delete(REST_SERVICE_URI+"delete/"+id)
+		 $http.post(REST_SERVICE_URI+"/delete/"+id)
 		    .then(
 		       function(response){
 		    	   deferred.resolve(response.data);

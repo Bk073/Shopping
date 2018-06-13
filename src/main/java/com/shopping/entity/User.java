@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
@@ -37,6 +39,20 @@ public class User implements Serializable{
         joinColumns = {@JoinColumn(name="user_id", referencedColumnName="userId")},
         inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")})
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
+	
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "shippingAddressId")
+	private ShippingAddress shippingAddress;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "billingAddressId")
+	private BillingAddress billingAddress;
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "cartId")
+	@JsonIgnore
+	private Cart cart;
 
 	public User() {
 	}
@@ -98,5 +114,30 @@ public class User implements Serializable{
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
+	public ShippingAddress getShippingAddress() {
+		return shippingAddress;
+	}
+
+	public void setShippingAddress(ShippingAddress shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
+
+	public BillingAddress getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(BillingAddress billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
+	
 
 }

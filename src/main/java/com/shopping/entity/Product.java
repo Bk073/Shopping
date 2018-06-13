@@ -15,6 +15,8 @@ public class Product implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="product_id")
 	private int productId;
+	@Column(name="category")
+	private String category;
 	
 	@Column(name = "product_name")
 	private String productName;
@@ -66,6 +68,14 @@ public class Product implements Serializable{
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	

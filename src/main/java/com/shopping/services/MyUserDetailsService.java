@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,28 +25,35 @@ import com.shopping.entity.UserRole;
 public class MyUserDetailsService implements UserDetailsService {
 
 	//get user from the database, via Hibernate
+	 static final Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
 	@Autowired
 	private UserDao userDao;
 
 	@Transactional(readOnly=true)
-	public UserDetails loadUserByUsername(final String username) 
+	public UserDetails loadUserByUsername( String username) 
 		throws UsernameNotFoundException {
 	
 		com.shopping.entity.User user = userDao.findByUserName(username);
-		List<GrantedAuthority> authorities = 
+		if(user == null){
+			logger.info("User not found");
+            throw new UsernameNotFoundException("Username not found");
+		}
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
+                true, true, true, true, buildUserAuthority((Set<UserRole>) user));
+		/*List<GrantedAuthority> authorities = 
                                       buildUserAuthority(user.getUserRole());
 
-		return buildUserForAuthentication(user, authorities);
+		return buildUserForAuthentication(user, authorities);*/
 		
 	}
 
 	// Converts com.shopping.users.entity.User user to
 	// org.springframework.security.core.userdetails.User
-	private User buildUserForAuthentication(com.shopping.entity.User user, 
+	/*private User buildUserForAuthentication(com.shopping.entity.User user, 
 		List<GrantedAuthority> authorities) {
 		return new User(user.getUsername(), user.getPassword(), 
 			user.isEnabled(), true, true, true, authorities);
-	}
+	}*/
 
 	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
 
@@ -58,4 +68,5 @@ public class MyUserDetailsService implements UserDetailsService {
 
 		return Result;
 	}
+	
 }

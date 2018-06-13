@@ -53,6 +53,17 @@
                               </div>
                           </div>
                       </div>
+                      <div>
+                          <div>
+                              <label>Product Url</label>
+                              <div>
+                                  <input type="text" ng-model="ctrl.product.category"  placeholder="Enter the category" required/>
+                                  <div>
+                                      
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
  
                       <div class="row">
                           <div class="form-actions floatRight">
@@ -60,12 +71,14 @@
                               <button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
                           </div>
                       </div>
+                     <%--  <input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />  --%>
                   </form>
               </div>
           </div>
           <div class="panel panel-default">
                 <!-- Default panel contents -->
-              <div class="panel-heading"><span class="lead">List of Users </span></div>
+              <div class="panel-heading"><span class="lead">List of Products </span></div>
               <div class="tablecontainer">
                   <table class="table table-hover">
                       <thead>
@@ -74,6 +87,7 @@
                               <th>Name</th>
                               <th>Description</th>
                               <th>Price</th>
+                              <th>category</th>
                               <th width="20%"></th>
                           </tr>
                       </thead>
@@ -83,11 +97,14 @@
                               <td><span ng-bind="u.productName"></span></td>
                               <td><span ng-bind="u.description"></span></td>
                               <td><span ng-bind="u.productPrice"></span></td>
+                              <td><span ng-bind="u.category"></span></td>
                               <td>
                               <button type="button" ng-click="ctrl.edit(u.productId)" class="btn btn-success custom-width">Edit</button>  <button type="button" ng-click="ctrl.remove(u.productId)" class="btn btn-danger custom-width">Remove</button>
                               </td>
                           </tr>
                       </tbody>
+                      <%-- <input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" /> --%>
                   </table>
               </div>
           </div>

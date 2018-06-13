@@ -1,7 +1,7 @@
 'use strict';
 angular.module('myApp').controller('ProductController', ['$scope', 'ProductService', function($scope, ProductService) {
     var self = this;
-    self.product={/*productId:'Null',*/productName:'',productPrice:'',description:'', imageUrl:''};
+    self.product={/*productId:'Null',*/productName:'',productPrice:'',description:'', imageUrl:'', category:''};
     self.products=[];
  
     self.submit = submit;
@@ -85,7 +85,7 @@ angular.module('myApp').controller('ProductController', ['$scope', 'ProductServi
  
  
     function reset(){
-        self.product={product_id:null,product_name:'',product_price:'',description:'', image_url:''};
+        self.product={productId:null,productName:'',productPrice:'',description:'', imageUrl:''};
         $scope.myForm.$setPristine(); //reset Form
     }
  

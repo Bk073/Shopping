@@ -10,7 +10,6 @@ public interface ProductDao {
 	boolean add(Product product);
 	boolean update(Product product);
 	boolean delete(Integer productId);
-
 	Product getProductsByName(String productName);
 	boolean isProductExit(Product product);
 }

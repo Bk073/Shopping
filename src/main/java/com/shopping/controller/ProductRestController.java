@@ -2,6 +2,7 @@ package com.shopping.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,22 +20,25 @@ import com.shopping.dao.ProductDao;
 import com.shopping.entity.Product;
 
 @RestController
-@RequestMapping("/product/")
+@RequestMapping("/product")
 public class ProductRestController {
 	@Autowired
 	ProductDao productDao;
-	
+	private static final Logger logger = Logger.getLogger(ProductRestController.class);
 	//Retrive all Product
 	
 	@RequestMapping(value= "", method = RequestMethod.GET)
 	public ResponseEntity<List<Product>> getAllProduct(){
+		if(logger.isDebugEnabled()){
+			logger.debug("Product list is executed!");
+		}
 		List<Product> products = productDao.list();
 		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 		
 	}
 	//Retrive single product
 	
-	@RequestMapping(value= "getProduct/{productName}", method= RequestMethod.GET)
+	@RequestMapping(value= "{productName}", method= RequestMethod.GET)
 	public ResponseEntity <Product> getProduct(@PathVariable("productName") String productName){
 		Product product = productDao.getProductsByName(productName);
 		if(product.equals(null)){
@@ -44,31 +48,34 @@ public class ProductRestController {
 	}
 	//Add Product
 	
-	 @RequestMapping(value = "add", method= RequestMethod.POST, consumes="application/json")
-	    public ResponseEntity<Void> createProduct(@ModelAttribute("product") Product product/*,    UriComponentsBuilder ucBuilder*/) {
-	        System.out.println("Creating Product " + product.getProductName());
+	 @RequestMapping( value="/admin/addProduct/",method= RequestMethod.POST)
+	    public ResponseEntity<Void> createProduct(@RequestBody Product product/*,    UriComponentsBuilder ucBuilder*/) {
+	        /*System.out.println("Creating Product " + product.getProductName());
 	  
 	        if (productDao.isProductExit(product)) {
 	            System.out.println("A Product with name " + product.getProductName() + " already exist");
 	            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-	        }
+	        }*/
 	  
 	       productDao.add(product);
+	       if(logger.isDebugEnabled()){
+				logger.debug("AddProduct is executed!");
+			}
 	  /*
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(product.getProductId().toUri());
 	        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);*/
-	       return new ResponseEntity<Void>(HttpStatus.CREATED);
+	       return new ResponseEntity<Void	>(HttpStatus.CREATED);
 	    }
 	 //Delete product
-	 @RequestMapping(value = "delete/{productId}", method = RequestMethod.DELETE)
+	 @RequestMapping(value = "/admin/delete/{productId}", method = RequestMethod.POST)
 	 @ResponseStatus(HttpStatus.OK)
 	    public ResponseEntity<Product> deleteProduct(@PathVariable("productId") int productId) {
-	        System.out.println("Fetching & Deleting User with id " + productId);
+	        System.out.println("Fetching & Deleting Product with id " + productId);
 	  
 	        Product product = productDao.get(productId);
 	        if (product == null) {
-	            System.out.println("Unable to delete. User with id " + productId + " not found");
+	            System.out.println("Unable to delete. Product with id " + productId + " not found");
 	            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
 	        }
 	  
@@ -76,5 +83,11 @@ public class ProductRestController {
 	        return new ResponseEntity<Product>(HttpStatus.NO_CONTENT);
 	    }
 	  
-	  
+	  //Update product
+	 @RequestMapping(value="/admin/update/{productId}", method = RequestMethod.PUT)
+	 public ResponseEntity<Product> updateProduct(@PathVariable("productId") int productId){
+		 Product product = productDao.get(productId);
+		 productDao.update(product);
+		 return new ResponseEntity<Product>(HttpStatus.OK);
+	 }
  }

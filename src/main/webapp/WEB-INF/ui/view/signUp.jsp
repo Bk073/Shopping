@@ -17,9 +17,9 @@
 <body>
  
  
-   <jsp:include page="_header.jsp" />
+   <%-- <jsp:include page="_header.jsp" />
    <jsp:include page="_menu.jsp" />
- 
+  --%>
  
  
    <div class="page-title">Sign Up</div>
@@ -38,52 +38,28 @@
            </div>
        </c:if>
  
- 		<form:form action="${pageContext.request.contextPath}/signUp" method="GET" modelAttribute="user">
- 			<table>
-               <tr>
-                   <td><form:label path="username">User Name</form:label></td>
-                   <td><form:input path="username" required="required"/> </td>
-                   <td style="color:red;"><form:errors path="username"></form:errors> </td>
-               </tr>
- 
-               <tr>
-                   <td><form:label path="password">Password *</form:label></td>
-                   <td><form:password path="password" required="required"/></td>
-                   <td style="color:red;"><form:errors path="password"></form:errors> </td>
-               </tr>
- 
- 			   <%-- <tr>
-                   <td><form:label path="confirmPassword">Confirm Password *</form:label></td>
-                   <td><form:password path="confirmPassword" required="required"/></td>
-                   <td style="color:red;"><form:errors path="confirmPassword"></form:errors> </td>
-               </tr>  --%>
-               <tr>
-                   <td>&nbsp;</td>
-                   <td><input type="submit" value="Sign Up" /> <input type="reset"
-                       value="Reset" /></td>
-               </tr>
-           </table>
- 		</form:form>
-       <%-- <form method="POST"
-           action="${pageContext.request.contextPath}/j_spring_security_check">
-           <table>
-               <tr>
-                   <td>User Name *</td>
-                   <td><input name="userName" /></td>
-               </tr>
- 
-               <tr>
-                   <td>Password *</td>
-                   <td><input type="password" name="password" /></td>
-               </tr>
- 
-               <tr>
-                   <td>&nbsp;</td>
-                   <td><input type="submit" value="Login" /> <input type="reset"
-                       value="Reset" /></td>
-               </tr>
-           </table>
-       </form>
+ 		<form name='signUp' action="<c:url value='/signUp' />" modelAttribute="user" method='POST'>
+
+			<table>
+				<tr>
+					<td>User:</td>
+					<td><input type='text' name='username'></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input type='password' name='password' /></td>
+				</tr>
+				
+				<tr>
+					<td colspan='2'><input name="submit" type="submit"
+						value="submit" /></td>
+				</tr>
+			</table>
+
+			<%-- <input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" /> --%>
+
+		</form>
  	   <a href="${pageContext.request.contextPath}/signUp">Sign Up Here</a> --%>
        <span class="error-message">${error }</span>
  
